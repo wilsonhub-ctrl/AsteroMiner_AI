@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsteroMiner AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='composition.css') }}">
+
+
+</head>
+
+<body class="bg-black text-white">
+    <div class="container">
+        <div class="content">
+            <div class="intro grid">
+                <div class="text-content">
+                    <div class="cardR">
+                        <h1>AsteroMiner AI 🌌🤖</h1>
+                        <h2>Your Gateway to Asteroid Mining!</h2>
+                    </div>
+                    <p class="textR">Unlock the cosmos with AsteroMiner AI, merging advanced tech, AI, and real-time
+                        data for
+                        smarter, more efficient asteroid mining.</p>
+
+                    <div class="features">
+                        <h3>Discover AsteroMiner AI:</h3>
+                        <ul class="textR">
+                            <li>✨ Analyze asteroids to find prime mining targets.</li>
+                            <li>🌌 Access real-time data from top space agencies.</li>
+                            <li>🔍 Get personalized mining strategies for optimal results.</li>
+                            <li>📈 Receive feasibility reports on material value and costs.</li>
+                            <li>🛠️ Plan missions with automated tools and equipment suggestions.</li>
+                            <li>🌍 Promote sustainable, responsible mining practices.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-container card">
+                    <h2>Asteroid Parameters</h2>
+                    <form id="dataForm" method="POST" action="/analyze">
+                        <label for="absolute_magnitude">Absolute Magnitude:</label>
+                        <input type="text" id="absolute_magnitude" name="absolute_magnitude" placeholder="5 - 13"
+                            required><br>
+
+                        <label for="albedo">Albedo:</label>
+                        <input type="text" id="albedo" name="albedo" placeholder="0 - 0.5" required><br>
+
+                        <label for="eccentricity">Eccentricity:</label>
+                        <input type="text" id="eccentricity" name="eccentricity" placeholder="0.05 - 0.5" required><br>
+
+                        <label for="aphelion_distance">Aphelion Distance:</label>
+                        <input type="text" id="aphelion_distance" name="aphelion_distance" placeholder="1.5 - 4"
+                            required><br>
+
+                        <button type="submit">Analyze</button>
+                    </form>
+                    <script>
+                        // Add event listener to the form
+                        document.getElementById("dataForm").addEventListener("submit", function (event) {
+                            // Get input values
+                            const absoluteMagnitude = parseFloat(document.getElementById("absolute_magnitude").value);
+                            const albedo = parseFloat(document.getElementById("albedo").value);
+                            const eccentricity = parseFloat(document.getElementById("eccentricity").value);
+                            const aphelionDistance = parseFloat(document.getElementById("aphelion_distance").value);
+
+                            // Validation function
+                            function isNumeric(value) {
+                                return !isNaN(value) && isFinite(value); // Checks if the value is a valid number
+                            }
+
+                            // Initialize error message
+                            let errorMessage = "";
+
+                            // Validate absolute magnitude
+                            if (!isNumeric(absoluteMagnitude) || absoluteMagnitude < 5 || absoluteMagnitude > 13) {
+                                errorMessage += "Absolute Magnitude must be a numeric value between 5 and 13.\n";
+                            }
+
+                            // Validate albedo
+                            if (!isNumeric(albedo) || albedo < 0 || albedo > 0.5) {
+                                errorMessage += "Albedo must be a numeric value between 0 and 0.5.\n";
+                            }
+
+                            // Validate eccentricity
+                            if (!isNumeric(eccentricity) || eccentricity < 0.05 || eccentricity > 0.5) {
+                                errorMessage += "Eccentricity must be a numeric value between 0.05 and 0.5.\n";
+                            }
+
+                            // Validate aphelion distance
+                            if (!isNumeric(aphelionDistance) || aphelionDistance < 1.5 || aphelionDistance > 4) {
+                                errorMessage += "Aphelion Distance must be a numeric value between 1.5 and 4.\n";
+                            }
+
+                            // If any validation fails, alert the error message and prevent form submission
+                            if (errorMessage) {
+                                alert(errorMessage);
+                                event.preventDefault(); // Prevent form submission
+                            }
+                        });
+                    </script>
+
+
+                </div>
+            </div>
+
+            {% if asteroid_details %}
+            <div class="results grid asteroid_details">
+                <div class="card scrollable">
+                    <h3>Asteroid Details</h3>
+                    <p>
+                        <strong>Name:</strong> {{ asteroid_details.Name }}<br>
+                        <strong>Short Name:</strong> {{ asteroid_details.ShortName }}<br>
+                        <strong>Spectral Class:</strong> {{ asteroid_details.SpectralClass }}<br>
+                        <strong>Orbit Class:</strong> {{ asteroid_details.OrbitClass }}<br>
+                        <strong>Effective Diameter:</strong> {{ asteroid_details.dia }}<br>
+                        <strong>Orbit ID:</strong> {{ asteroid_details.OrbitID }}<br>
+                        <strong>Potentially Hazardous:</strong> {{ asteroid_details.pha}}<br>
+                        <strong>Absolute Magnitude:</strong> {{ asteroid_details.H}}<br>
+                        <strong>Dimensions:</strong> {{ asteroid_details.Dimensions }}<br>
+                        <strong>Effective Diameter:</strong> {{ asteroid_details.dia }}<br>
+                        <strong>Magnitude Slope:</strong> {{ asteroid_details.G }}<br>
+                        <strong>Rotation Period:</strong> {{ asteroid_details.RotationPeriod }}<br>
+                        <strong>Eccentricity:</strong> {{ asteroid_details.eccentricity }}<br>
+                        <strong>Perihelion:</strong> {{ asteroid_details.perihelion }}<br>
+                        <strong>Aphelion:</strong> {{ asteroid_details.aphelion }}<br>
+                        <strong>Geometric Albedo:</strong> {{ asteroid_details.Albedo }}<br>
+                        <strong>Bulk Density:</strong> {{ asteroid_details.BulkDensity }}<br>
+                        <strong>Inclination:</strong> {{ asteroid_details.inclination }}<br>
+                        <strong>Argument of Perihelion:</strong> {{ asteroid_details.args}}<br>
+                        <strong>Longitude of the Ascending Node:</strong> {{ asteroid_details.longi}}<br>
+                    </p>
+                </div>
+                <div class="wrap-container">
+                    <div class="card">
+                        <h3>Asteroid Visualisation</h3>
+                        <div id="image-container">
+
+                        </div>
+                        <script>
+                            // Image arrays
+                            let ximages = ['static/images/x-type-1.jpg', 'static/images/x-type-2.jpg', 'static/images/x-type.jpg'];
+                            let cimages = ['static/images/bennu-c.jpg', 'static/images/Ceres_globe-c.jpeg', 'static/images/c-type.jpg', 'static/images/ryugu-c.jpg'];
+                            let simages = ['static/images/2012-DA14-s.jpg', 'static/images/eros-s.jpeg', 'static/images/Itokawa-s.jpg', 'static/images/juno-s.jpg'];
+
+                            // Combined array for demonstration (you can target any array dynamically)
+                            let images = [...ximages, ...cimages, ...simages]; // Merge all arrays or choose one array
+
+                            // Function to get the next image index cyclically
+                            function getNextIndex(currentIndex, arrayLength) {
+                                return (currentIndex + 1) % arrayLength; // Cycles back to 0 after reaching the last index
+                            }
+
+                            // Load and update the index from localStorage
+                            let currentIndex = parseInt(localStorage.getItem("imageIndex")) || 0; // Default to 0 if no index is stored
+                            const nextIndex = getNextIndex(currentIndex, images.length);
+
+                            // Update localStorage with the next index
+                            localStorage.setItem("imageIndex", nextIndex);
+
+                            // Get the image container
+                            const imageContainer = document.getElementById("image-container");
+
+                            // Clear the container and display the current image
+                            imageContainer.innerHTML = ''; // Clear previous content
+                            const imgTag = document.createElement('img');
+                            imgTag.src = images[currentIndex];
+                            imgTag.alt = 'Asteroid Image';
+                            imgTag.style.width = "430px";
+                            imgTag.style.height = "320px";
+                            imgTag.loading = "lazy";
+                            imageContainer.appendChild(imgTag);
+
+                            console.log(`Displayed Image: ${images[currentIndex]}, Next Index: ${nextIndex}`);
+                        </script>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card container" style="width: 100%; height: 100vh; display: flex; flex-direction: column;">
+                <h1 style="text-align: center;">Element Composition Analysis</h1>
+                <div class="chart-wrapper" style="display: flex; flex-direction: row; flex-grow: 1;">
+                    <div style="flex: 3; display: flex; align-items: center; justify-content: center;">
+                        <canvas id="barChart" style="max-width: 100%; max-height: 90%;"></canvas>
+                    </div>
+                    <div id="legend"
+                        style="flex: 1; margin-left: 20px; display: flex; flex-direction: row; flex-wrap: wrap; align-items: flex-start;">
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                const spkID = "{{ spk_id }}"; // Assign Flask variable to a JS variable
+                console.log("SPK ID from Flask:", spkID);
+
+                // Fetch composition data from Flask route
+                fetch("/get-composition", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ spk_id: spkID }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            let composition = data.data;
+
+                            // Sort composition data by values in ascending order
+                            const sortedComposition = Object.entries(composition).sort(([, a], [, b]) => a - b);
+
+                            // Prepare data for the chart
+                            const labels = sortedComposition.map(([key]) => key);
+                            const values = sortedComposition.map(([, value]) => value);
+
+                            // Generate distinct, toned-down colors for each bar
+                            const colors = values.map((_, index) => `hsl(${(index / values.length) * 360}, 50%, 70%)`);
+
+                            // Create a bar chart
+                            const ctx = document.getElementById("barChart").getContext("2d");
+                            new Chart(ctx, {
+                                type: "bar",
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: "Element Composition",
+                                        data: values,
+                                        backgroundColor: colors,
+                                        borderColor: colors.map(color => color.replace("70%", "50%")), // Slightly darker border
+                                        borderWidth: 1,
+                                        color: 'white',
+                                    }],
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: {
+                                            display: false,
+                                            labels: {
+                                                color: 'white', // Change legend text color to white
+                                            }// Disable the default legend
+                                        },
+                                    },
+                                    scales: {
+                                        x: { ticks: { autoSkip: false, color: 'white' } },
+                                        y: { ticks: { autoSkip: false, color: 'white' } },
+                                    },
+                                },
+                            });
+
+                            // Create a custom legend on the right-hand side
+                            const legend = document.getElementById("legend");
+                            labels.forEach((label, index) => {
+                                const color = colors[index];
+                                const legendItem = document.createElement("div");
+                                legendItem.style.display = "flex";
+                                legendItem.style.alignItems = "center";
+                                legendItem.style.marginBottom = "10px";
+                                legendItem.style.flexBasis = "50%"; // Two items per row
+                                legendItem.innerHTML = `
+                                <div style="width: 20px; height: 20px; background-color: ${color}; margin-right: 10px; border: 1px solid ${color.replace("70%", "50%")}"></div>
+                                <span>${label}: ${values[index]} %</span>
+                            `;
+                                legend.appendChild(legendItem);
+                            });
+                        } else {
+                            console.error("Error fetching composition:", data.message);
+                        }
+                    })
+                    .catch(error => console.error("Fetch error:", error));
+            </script>
+            <div class="wrap-container">
+                <div class="card scrollable inst-cont">
+                    <h3>Mining Instructions</h3>
+                    <p>{{ mining_instructions|safe }}</p>
+                </div>
+                <div class="card scrollable inst-cont">
+                    <h3>Mining Recommendation</h3>
+                    <p>{{ mining_recommendation|safe }}</p>
+                </div>
+            </div>
+
+            <div class="outside-container">
+                <div class="single-title">
+                    <h2>Mission Cost and Revenue Analysis</h2>
+                </div>
+                <div class="wrap-container">
+                    <div class="card scrollable cost-est">
+                        <h3>Mission Cost Estimation</h3>
+                        <p>Mission Design and Planning Cost: ${{ mission_cost['design_cost'] }} million</p>
+                        <p>Spacecraft Development and Launch Cost: ${{ mission_cost['dev_cost'] +
+                            mission_cost['launch_cost'] }}
+                            million</p>
+                        <p>Asteroid Capture Cost: ${{ mission_cost['capture_cost'] }} million</p>
+                        <h4>Mission Cost: ${{ mission_cost['total_cost'] }} million</h4><br>
+                        <h3>Post-Mission Cost Estimation</h3>
+                        <p>Cost to Convert the Sample to Pure Metal: ${{ mission_cost['process_cost'] }}</p>
+                        <p>
+                        <h4>Total Mission Cost(All cost): ${{ mission_cost['total_cost'] }} million</h4>
+                        </p>
+
+                        <h3>Estimated Benefits</h3>
+                        <p>Water Ice: {{ benefits['water_ice']['mass'] }} million tons (valued at ${{
+                            benefits['water_ice']['value_range'][0] }} - ${{ benefits['water_ice']['value_range'][1] }}
+                            billion)
+                        </p>
+                        <p>Precious Metals: {{ benefits['precious_metals']['mass'] }} tons (valued at ${{
+                            benefits['precious_metals']['value_range'][0] }} - ${{
+                            benefits['precious_metals']['value_range'][1]
+                            }} billion)</p>
+                        <p>Organic Compounds: {{ benefits['organic_compounds']['mass'] }} million tons (valued at ${{
+                            benefits['organic_compounds']['value_range'][0] }} - ${{
+                            benefits['organic_compounds']['value_range'][1] }} billion)</p>
+                        <p>
+                        <h4>Total Estimated Value: ${{ benefits['total_value_display']['value_range'][0] }} - ${{
+                            benefits['total_value_display']['value_range'][1] }} {{
+                            benefits['total_value_display']['unit'] }}</h4>
+                        </p>
+                    </div>
+
+                    <div class="card container graph">
+                        <div class="chart-wrapper">
+                            <canvas id="missionChart"></canvas> <!-- Canvas for Mission Cost -->
+                            <!-- Canvas for Revenue -->
+                        </div>
+                    </div>
+                    <script>
+                        // Fetch mission data from Flask route
+                        fetch("/get-mission-data", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ spk_id: spkID }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === "success") {
+                                    let missionCost = data.data.mission_cost;
+                                    const benefits = data.data.benefits;
+                                    console.log(benefits.total_value_display)
+
+                                    if (Array.isArray(missionCost) && missionCost.length > 0) {
+                                        missionCost = missionCost[0]; // Extract first element if array
+                                    }
+
+                                    const categories = [
+                                        'Total Mission Cost in Million USD',
+                                        'Total Estimated Revenue in ' + benefits.total_value_display.unit + ' USD'
+                                    ];
+                                    const missionValues = [
+                                        missionCost.total_cost,
+                                        benefits.total_value_display.value_range[1]
+                                    ];
+
+                                    // Ensure canvas exists
+                                    const missionChartCanvas = document.getElementById("missionChart");
+                                    if (missionChartCanvas) {
+                                        const ctx = missionChartCanvas.getContext("2d");
+
+                                        // Prepare data for the chart
+                                        const categories = ['Total Mission Cost(Post+During)', 'Total Estimated Revenue'];
+                                        const missionValues = [missionCost.total_cost, benefits.total_value_display['value_range'][1]];
+
+                                        // Generate distinct, toned-down colors for each bar
+                                        const costColor = "hsl(0, 50%, 70%)"; // Color for Mission Cost
+                                        const costBorderColor = "hsl(0, 70%, 50%)";
+                                        const revenueColor = "hsl(108, 50%, 70%)"; // Color for Revenue
+                                        const revenueBorderColor = "hsl(108, 70%, 50%)";
+
+                                        new Chart(ctx, {
+                                            type: "bar",
+                                            data: {
+                                                labels: categories,
+                                                datasets: [
+                                                    {
+                                                        label: "Mission Cost in Million USD",
+                                                        data: [missionValues[0]], // Mission Cost for the first category
+                                                        backgroundColor: "rgba(255, 99, 132, 0.5)",
+                                                        borderColor: "rgba(255, 99, 132, 1)",
+                                                        borderWidth: 1,
+                                                        barPercentage: 1.3, // Adj      ust bar width
+                                                        categoryPercentage: 0.3, // Adjust gap between bars
+                                                    },
+                                                    {
+                                                        label: "Revenue in " + benefits.total_value_display.unit + " USD",
+                                                        data: [missionValues[1]], // Revenue for the second category
+                                                        backgroundColor: "rgba(75, 192, 192, 0.5)",
+                                                        borderColor: "rgba(75, 192, 192, 1)",
+                                                        borderWidth: 1,
+                                                        barPercentage: 0.2, // Adjust bar width
+                                                        categoryPercentage: 3.0, // Adjust gap between bars
+                                                    }
+                                                ]
+                                            },
+                                            options: {
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                        display: true, // Display legend with labels
+                                                        position: 'top',
+                                                        labels: {
+                                                            color: 'white', // Change legend text color to white
+                                                        }
+                                                    },
+                                                    tooltip: {
+                                                        callbacks: {
+                                                            label: function (tooltipItem) {
+                                                                if (tooltipItem.datasetIndex === 0) {
+                                                                    return "$" + tooltipItem.raw.toFixed(2) + " million"; // Tooltip for Mission Cost
+                                                                } else {
+                                                                    return "$" + tooltipItem.raw.toFixed(2) + " " + benefits.total_value_display.unit; // Tooltip for Revenue
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                scales: {
+                                                    x: {
+                                                        ticks: {
+                                                            autoSkip: false, // Show all labels
+                                                            maxRotation: 0, // No rotation
+                                                            minRotation: 0, // No tilting
+                                                            align: "center",
+                                                            color: 'white', // Ensure alignment
+                                                        }
+                                                    },
+                                                    y: {
+                                                        beginAtZero: true,
+                                                        ticks: {
+                                                            callback: function (value) {
+                                                                return value >= 1000000
+                                                                    ? value / 1000000 + "M"
+                                                                    : value;
+                                                            },
+                                                            color: 'white',
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                                    } else {
+                                        console.error("Canvas element with id 'missionChart' not found.");
+                                    }
+                                } else {
+                                    console.error("Error fetching mission data:", data.message);
+                                }
+                            })
+                            .catch(error => console.error("Fetch error:", error));
+                    </script>
+
+
+
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

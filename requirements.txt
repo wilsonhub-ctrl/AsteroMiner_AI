@@ -1,0 +1,11 @@
+cohere
+pandas
+flask
+requests
+scipy
+scikit-learn
+xgboost
+gunicorn
+#pip  install  -r requriements.txt 
+#python product.py
+#pip install --upgrade cohere 
